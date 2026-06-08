@@ -1269,6 +1269,13 @@ var require_browser = __commonJS({
   }
 });
 
+// cjs-shim:supports-color
+var require_supports_color = __commonJS({
+  "cjs-shim:supports-color"(exports2, module2) {
+    module2.exports = { stdout: false, stderr: false };
+  }
+});
+
 // ../../node_modules/.pnpm/debug@4.4.3/node_modules/debug/src/node.js
 var require_node = __commonJS({
   "../../node_modules/.pnpm/debug@4.4.3/node_modules/debug/src/node.js"(exports2, module2) {
@@ -1287,7 +1294,7 @@ var require_node = __commonJS({
     );
     exports2.colors = [6, 2, 3, 4, 5, 1];
     try {
-      const supportsColor = require("supports-color");
+      const supportsColor = require_supports_color();
       if (supportsColor && (supportsColor.stderr || supportsColor).level >= 2) {
         exports2.colors = [
           20,

@@ -9,6 +9,23 @@ globalThis.require = createRequire(import.meta.url);
 const artifactDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(artifactDir, "..", "..");
 
+// Shim any ESM-only packages that get dynamically required in CJS context.
+// supports-color is required by debug (used by Express) only for terminal
+// color detection — returning false just disables colored debug output.
+const shimPlugin = {
+  name: "cjs-shims",
+  setup(build) {
+    build.onResolve({ filter: /^supports-color$/ }, (args) => ({
+      path: args.path,
+      namespace: "cjs-shim",
+    }));
+    build.onLoad({ filter: /.*/, namespace: "cjs-shim" }, () => ({
+      contents: "module.exports = { stdout: false, stderr: false };",
+      loader: "js",
+    }));
+  },
+};
+
 async function buildFunction() {
   const distDir = path.resolve(rootDir, "netlify-functions-dist");
   await rm(distDir, { recursive: true, force: true });
@@ -49,6 +66,7 @@ async function buildFunction() {
       "firebase-admin",
     ],
     sourcemap: false,
+    plugins: [shimPlugin],
   });
 }
 
