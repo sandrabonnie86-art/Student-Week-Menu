@@ -33384,6 +33384,13 @@ var require_pg_pool = __commonJS({
   }
 });
 
+// cjs-shim:pg-native
+var require_pg_native = __commonJS({
+  "cjs-shim:pg-native"() {
+    throw new Error("pg-native is not available in this environment");
+  }
+});
+
 // ../../node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/native/query.js
 var require_query2 = __commonJS({
   "../../node_modules/.pnpm/pg@8.20.0/node_modules/pg/lib/native/query.js"(exports2, module2) {
@@ -33531,7 +33538,7 @@ var require_client2 = __commonJS({
     var nodeUtils = require("util");
     var Native;
     try {
-      Native = require("pg-native");
+      Native = require_pg_native();
     } catch (e) {
       throw e;
     }
