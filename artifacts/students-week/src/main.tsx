@@ -3,7 +3,7 @@ import { setBaseUrl, setAuthTokenGetter } from "@workspace/api-client-react";
 import App from "./App";
 import "./index.css";
 
-setBaseUrl("http://localhost:3001");
+setBaseUrl(null);
 setAuthTokenGetter(() => {
   // Check for tokens in localStorage (admin first, then usher, then vendor)
   const adminToken = localStorage.getItem("adminToken");
