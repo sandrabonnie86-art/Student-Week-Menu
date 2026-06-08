@@ -36,7 +36,7 @@ export function authMiddleware(
 router.post("/auth/admin", async (req, res): Promise<void> => {
   const parsed = VerifyAdminPinBody.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.message });
+    res.status(400).json({ error: "Invalid request", issues: parsed.error.issues });
     return;
   }
 
@@ -54,7 +54,7 @@ router.post("/auth/admin", async (req, res): Promise<void> => {
 router.post("/auth/usher", async (req, res): Promise<void> => {
   const parsed = VerifyUsherPinBody.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.message });
+    res.status(400).json({ error: "Invalid request", issues: parsed.error.issues });
     return;
   }
 
@@ -72,7 +72,7 @@ router.post("/auth/usher", async (req, res): Promise<void> => {
 router.post("/auth/vendor", async (req, res): Promise<void> => {
   const parsed = VerifyVendorPinBody.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.message });
+    res.status(400).json({ error: "Invalid request", issues: parsed.error.issues });
     return;
   }
 
