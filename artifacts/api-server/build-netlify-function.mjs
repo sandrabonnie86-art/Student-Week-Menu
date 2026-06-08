@@ -2,7 +2,6 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build as esbuild } from "esbuild";
-import esbuildPluginPino from "esbuild-plugin-pino";
 import { rm } from "node:fs/promises";
 
 globalThis.require = createRequire(import.meta.url);
@@ -18,9 +17,8 @@ async function buildFunction() {
     entryPoints: [path.resolve(rootDir, "netlify/functions/api.ts")],
     platform: "node",
     bundle: true,
-    format: "esm",
-    outdir: distDir,
-    outExtension: { ".js": ".mjs" },
+    format: "cjs",
+    outfile: path.resolve(distDir, "api.js"),
     logLevel: "info",
     nodePaths: [
       path.resolve(artifactDir, "node_modules"),
@@ -51,18 +49,6 @@ async function buildFunction() {
       "firebase-admin",
     ],
     sourcemap: false,
-    plugins: [
-      esbuildPluginPino({ transports: ["pino-pretty"] }),
-    ],
-    banner: {
-      js: `import { createRequire as __bannerCrReq } from 'node:module';
-import __bannerPath from 'node:path';
-import __bannerUrl from 'node:url';
-globalThis.require = __bannerCrReq(import.meta.url);
-globalThis.__filename = __bannerUrl.fileURLToPath(import.meta.url);
-globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
-`,
-    },
   });
 }
 
