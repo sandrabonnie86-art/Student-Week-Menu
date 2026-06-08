@@ -1,36 +1,1290 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
-  version: 0.1.0
-  description: API specification
+  version: 0.3.0
+  description: Students Week 2026 food ordering API
 servers:
   - url: /api
-    description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: vendors
+  - name: menu
+    description: Hierarchical menu (main dishes, types, sides, proteins, configs)
+  - name: orders
+  - name: tables
+  - name: config
+  - name: auth
+  - name: vendor
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
-          description: Healthy
+          description: OK
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /vendors:
+    get:
+      operationId: getVendors
+      tags: [vendors]
+      summary: List vendors
+      parameters:
+        - name: activeOnly
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of vendors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Vendor"
+    post:
+      operationId: createVendor
+      tags: [vendors]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VendorInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Vendor"
+
+  /vendors/{id}:
+    patch:
+      operationId: updateVendor
+      tags: [vendors]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VendorUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Vendor"
+    delete:
+      operationId: deleteVendor
+      tags: [vendors]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /main-dishes:
+    get:
+      operationId: getMainDishes
+      tags: [menu]
+      summary: Get main dishes (optionally filtered by vendor), with full nested data per type
+      parameters:
+        - name: vendorId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of main dishes — each type includes its own sides, proteins, and config
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MainDishFull"
+    post:
+      operationId: createMainDish
+      tags: [menu]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MainDishInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MainDishFull"
+
+  /main-dishes/{id}:
+    patch:
+      operationId: updateMainDish
+      tags: [menu]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MainDishUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MainDishFull"
+    delete:
+      operationId: deleteMainDish
+      tags: [menu]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /main-dish-types:
+    post:
+      operationId: createMainDishType
+      tags: [menu]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MainDishTypeInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MainDishType"
+
+  /main-dish-types/{id}:
+    patch:
+      operationId: updateMainDishType
+      tags: [menu]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MainDishTypeUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MainDishType"
+    delete:
+      operationId: deleteMainDishType
+      tags: [menu]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /side-items:
+    post:
+      operationId: createSideItem
+      tags: [menu]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SideItemInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SideItem"
+
+  /side-items/{id}:
+    patch:
+      operationId: updateSideItem
+      tags: [menu]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SideItemUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SideItem"
+    delete:
+      operationId: deleteSideItem
+      tags: [menu]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /protein-items:
+    post:
+      operationId: createProteinItem
+      tags: [menu]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProteinItemInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProteinItem"
+
+  /protein-items/{id}:
+    patch:
+      operationId: updateProteinItem
+      tags: [menu]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProteinItemUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProteinItem"
+    delete:
+      operationId: deleteProteinItem
+      tags: [menu]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /dish-configs/type/{typeId}:
+    get:
+      operationId: getDishConfig
+      tags: [menu]
+      parameters:
+        - name: typeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Config for this dish type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DishConfig"
+    put:
+      operationId: updateDishConfig
+      tags: [menu]
+      parameters:
+        - name: typeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DishConfigInput"
+      responses:
+        "200":
+          description: Updated config
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DishConfig"
+
+  /orders:
+    get:
+      operationId: getOrders
+      tags: [orders]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, served]
+        - name: vendorId
+          in: query
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by customer name or table number
+      responses:
+        "200":
+          description: Orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderFull"
+    post:
+      operationId: createOrder
+      tags: [orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "201":
+          description: Created order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderFull"
+        "409":
+          description: Duplicate order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /orders/summary:
+    get:
+      operationId: getOrderSummary
+      tags: [orders]
+      responses:
+        "200":
+          description: Summary stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderSummary"
+
+  /orders/history:
+    get:
+      operationId: getOrderHistory
+      tags: [orders]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, served]
+        - name: vendorId
+          in: query
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderFull"
+
+  /orders/by-table:
+    get:
+      operationId: getOrdersByTable
+      tags: [orders]
+      responses:
+        "200":
+          description: Orders grouped by table
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TableOrderGroup"
+
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderFull"
+
+  /orders/{id}/status:
+    patch:
+      operationId: updateOrderStatus
+      tags: [orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderStatusUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderFull"
+
+  /tables:
+    get:
+      operationId: getTables
+      tags: [tables]
+      parameters:
+        - name: activeOnly
+          in: query
+          schema:
+            type: boolean
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Tables
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventTable"
+    post:
+      operationId: createTable
+      tags: [tables]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TableInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventTable"
+
+  /tables/{id}:
+    patch:
+      operationId: updateTable
+      tags: [tables]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TableUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventTable"
+    delete:
+      operationId: deleteTable
+      tags: [tables]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /config:
+    get:
+      operationId: getConfig
+      tags: [config]
+      responses:
+        "200":
+          description: App config
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppConfig"
+    put:
+      operationId: updateConfig
+      tags: [config]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppConfigInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppConfig"
+
+  /auth/admin:
+    post:
+      operationId: verifyAdminPin
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyAdminPin"
+      responses:
+        "200":
+          description: Valid pin
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [valid]
+                properties:
+                  valid:
+                    type: boolean
+                  token:
+                    type: string
+        "401":
+          description: Invalid pin
+  /auth/usher:
+    post:
+      operationId: verifyUsherPin
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyUsherPin"
+      responses:
+        "200":
+          description: Valid pin
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [valid]
+                properties:
+                  valid:
+                    type: boolean
+                  token:
+                    type: string
+        "401":
+          description: Invalid pin
+  /auth/vendor:
+    post:
+      operationId: verifyVendorPin
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyVendorPin"
+      responses:
+        "200":
+          description: Valid pin, returns vendor
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [valid, vendor]
+                properties:
+                  valid:
+                    type: boolean
+                  token:
+                    type: string
+                  vendor:
+                    $ref: "#/components/schemas/Vendor"
+        "401":
+          description: Invalid pin
+
+  /vendor-dashboard/{vendorId}/stats:
+    get:
+      operationId: getVendorDashboardStats
+      tags: [vendor]
+      parameters:
+        - name: vendorId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Vendor dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VendorDashboardStats"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+
+    Vendor:
+      type: object
+      required: [id, name, isActive, maxPlates, orderCount, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        isActive:
+          type: boolean
+        maxPlates:
+          type: integer
+        vendorPin:
+          type: ["string", "null"]
+        orderCount:
+          type: integer
+        createdAt:
+          type: string
+
+    VendorInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        imageUrl:
+          type: string
+        isActive:
+          type: boolean
+        maxPlates:
+          type: integer
+          minimum: 0
+
+    VendorUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        isActive:
+          type: boolean
+        maxPlates:
+          type: integer
+          minimum: 0
+        vendorPin:
+          type: ["string", "null"]
+
+    MainDishType:
+      type: object
+      required: [id, mainDishId, name, isAvailable]
+      properties:
+        id:
+          type: integer
+        mainDishId:
+          type: integer
+        name:
+          type: string
+        imageUrl:
+          type: ["string", "null"]
+        isAvailable:
+          type: boolean
+
+    MainDishTypeFull:
+      type: object
+      required: [id, mainDishId, name, isAvailable, sides, proteins, config]
+      properties:
+        id:
+          type: integer
+        mainDishId:
+          type: integer
+        name:
+          type: string
+        imageUrl:
+          type: ["string", "null"]
+        isAvailable:
+          type: boolean
+        sides:
+          type: array
+          items:
+            $ref: "#/components/schemas/SideItem"
+        proteins:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProteinItem"
+        config:
+          $ref: "#/components/schemas/DishConfig"
+
+    MainDishTypeInput:
+      type: object
+      required: [mainDishId, name]
+      properties:
+        mainDishId:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+        imageUrl:
+          type: string
+        isAvailable:
+          type: boolean
+
+    MainDishTypeUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        imageUrl:
+          type: ["string", "null"]
+        isAvailable:
+          type: boolean
+
+    SideItem:
+      type: object
+      required: [id, mainDishTypeId, name, isComplementary, isAvailable]
+      properties:
+        id:
+          type: integer
+        mainDishTypeId:
+          type: integer
+        name:
+          type: string
+        imageUrl:
+          type: ["string", "null"]
+        isComplementary:
+          type: boolean
+        isAvailable:
+          type: boolean
+
+    SideItemInput:
+      type: object
+      required: [mainDishTypeId, name]
+      properties:
+        mainDishTypeId:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+        imageUrl:
+          type: string
+        isComplementary:
+          type: boolean
+        isAvailable:
+          type: boolean
+
+    SideItemUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        imageUrl:
+          type: ["string", "null"]
+        isComplementary:
+          type: boolean
+        isAvailable:
+          type: boolean
+
+    ProteinItem:
+      type: object
+      required: [id, mainDishTypeId, name, isAvailable]
+      properties:
+        id:
+          type: integer
+        mainDishTypeId:
+          type: integer
+        name:
+          type: string
+        imageUrl:
+          type: ["string", "null"]
+        isAvailable:
+          type: boolean
+
+    ProteinItemInput:
+      type: object
+      required: [mainDishTypeId, name]
+      properties:
+        mainDishTypeId:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+        imageUrl:
+          type: string
+        isAvailable:
+          type: boolean
+
+    ProteinItemUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        imageUrl:
+          type: ["string", "null"]
+        isAvailable:
+          type: boolean
+
+    DishConfig:
+      type: object
+      required: [id, mainDishTypeId, maxSides, maxProteins]
+      properties:
+        id:
+          type: integer
+        mainDishTypeId:
+          type: integer
+        maxSides:
+          type: integer
+        maxProteins:
+          type: integer
+
+    DishConfigInput:
+      type: object
+      properties:
+        maxSides:
+          type: integer
+          minimum: 0
+        maxProteins:
+          type: integer
+          minimum: 0
+
+    MainDishFull:
+      type: object
+      required: [id, vendorId, name, createdAt, types]
+      properties:
+        id:
+          type: integer
+        vendorId:
+          type: integer
+        name:
+          type: string
+        createdAt:
+          type: string
+        types:
+          type: array
+          items:
+            $ref: "#/components/schemas/MainDishTypeFull"
+
+    MainDishInput:
+      type: object
+      required: [vendorId, name]
+      properties:
+        vendorId:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+
+    MainDishUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+
+    OrderSideItem:
+      type: object
+      required: [id, sideId, sideName, isComplementary]
+      properties:
+        id:
+          type: integer
+        sideId:
+          type: integer
+        sideName:
+          type: string
+        isComplementary:
+          type: boolean
+
+    OrderProteinItem:
+      type: object
+      required: [id, proteinId, proteinName]
+      properties:
+        id:
+          type: integer
+        proteinId:
+          type: integer
+        proteinName:
+          type: string
+
+    OrderFull:
+      type: object
+      required: [id, customerName, tableNumber, vendorId, vendorName, status, createdAt, sides, proteins]
+      properties:
+        id:
+          type: integer
+        customerName:
+          type: string
+        tableNumber:
+          type: string
+        vendorId:
+          type: integer
+        vendorName:
+          type: string
+        mainDishTypeId:
+          type: ["integer", "null"]
+        mainDishTypeName:
+          type: ["string", "null"]
+        mainDishName:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [pending, served]
+        createdAt:
+          type: string
+        sides:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderSideItem"
+        proteins:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderProteinItem"
+
+    OrderInput:
+      type: object
+      required: [customerName, tableNumber, vendorId, mainDishTypeId, sideIds, proteinIds]
+      properties:
+        customerName:
+          type: string
+          minLength: 1
+        tableNumber:
+          type: string
+          minLength: 1
+        vendorId:
+          type: integer
+        mainDishTypeId:
+          type: integer
+        sideIds:
+          type: array
+          items:
+            type: integer
+        proteinIds:
+          type: array
+          items:
+            type: integer
+
+    OrderStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [pending, served]
+
+    OrderSummary:
+      type: object
+      required: [total, pending, served, byVendor]
+      properties:
+        total:
+          type: integer
+        pending:
+          type: integer
+        served:
+          type: integer
+        byVendor:
+          type: array
+          items:
+            $ref: "#/components/schemas/VendorOrderCount"
+
+    VendorOrderCount:
+      type: object
+      required: [vendorId, vendorName, count]
+      properties:
+        vendorId:
+          type: integer
+        vendorName:
+          type: string
+        count:
+          type: integer
+
+    TableOrderGroup:
+      type: object
+      required: [tableNumber, totalOrders, pendingCount, servedCount, orders]
+      properties:
+        tableNumber:
+          type: string
+        totalOrders:
+          type: integer
+        pendingCount:
+          type: integer
+        servedCount:
+          type: integer
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderFull"
+
+    EventTable:
+      type: object
+      required: [id, tableNumber, isActive, createdAt]
+      properties:
+        id:
+          type: integer
+        tableNumber:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+
+    TableInput:
+      type: object
+      required: [tableNumber]
+      properties:
+        tableNumber:
+          type: string
+          minLength: 1
+        isActive:
+          type: boolean
+
+    TableUpdate:
+      type: object
+      properties:
+        tableNumber:
+          type: string
+          minLength: 1
+        isActive:
+          type: boolean
+
+    AppConfig:
+      type: object
+      required: [id, maxSides, maxProteins, allowMultipleMains, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        maxSides:
+          type: integer
+        maxProteins:
+          type: integer
+        allowMultipleMains:
+          type: boolean
+        adminPin:
+          type: ["string", "null"]
+        usherPin:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    AppConfigInput:
+      type: object
+      properties:
+        maxSides:
+          type: integer
+          minimum: 1
+        maxProteins:
+          type: integer
+          minimum: 1
+        allowMultipleMains:
+          type: boolean
+        adminPin:
+          type: ["string", "null"]
+        usherPin:
+          type: ["string", "null"]
+
+    VerifyAdminPin:
+      type: object
+      required: [pin]
+      properties:
+        pin:
+          type: string
+          minLength: 1
+
+    VerifyUsherPin:
+      type: object
+      required: [pin]
+      properties:
+        pin:
+          type: string
+          minLength: 1
+
+    VerifyVendorPin:
+      type: object
+      required: [pin]
+      properties:
+        pin:
+          type: string
+          minLength: 1
+
+    VendorDashboardStats:
+      type: object
+      required: [totalOrders, pendingOrders, servedOrders, remainingPlates]
+      properties:
+        totalOrders:
+          type: integer
+        pendingOrders:
+          type: integer
+        servedOrders:
+          type: integer
+        remainingPlates:
+          type: integer
+        popularMainDishes:
+          type: array
+          items:
+            type: object
+            required: [name, count]
+            properties:
+              name:
+                type: string
+              count:
+                type: integer
+        popularMainDishTypes:
+          type: array
+          items:
+            type: object
+            required: [name, count]
+            properties:
+              name:
+                type: string
+              count:
+                type: integer
+        popularSides:
+          type: array
+          items:
+            type: object
+            required: [name, count]
+            properties:
+              name:
+                type: string
+              count:
+                type: integer
+        popularProteins:
+          type: array
+          items:
+            type: object
+            required: [name, count]
+            properties:
+              name:
+                type: string
+              count:
+                type: integer

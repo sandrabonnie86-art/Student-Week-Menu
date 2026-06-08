@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Students Week 2026"
+version = "1.0.0"
+id = "artifacts/students-week"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19560
+
+[services.development]
+run = "pnpm --filter @workspace/students-week run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/students-week", "run", "build" ]
+publicDir = "artifacts/students-week/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19560"
+BASE_PATH = "/"

@@ -1,0 +1,25 @@
+the tables tab should have a search bar for table numbers
+the configuration should be set per main dish not generally
+and each main dish has a type (rice is a main dish and types they select are fired rice jollof rice etc) and the side dish and proteins are set per main dish per type for all of them and compliementary side dishes have an option to decline them if you want and only side dushes should have the complimentary toggle
+
+did you add the max plate count for each vendor and the rendering them unavailable automatically when the max plates have been reaches thatmeans when the orders that came in for that vendor have reached the max plates set ?
+and the tables in the table page should be in a grid format for easy mobile view and when a table is clicked opens the info page showing all orders for that table and which are pending and which have been delivered with the option to mark indivisual of ultiple at once as delivered and stuff
+
+in the menu items tab it should be properly arranged to be per vendor in modals , a vendor is clicked , drops down to show main dishes , drops down to show , types , which each drops down to show sides, and proteins with each editiable in a clean and simple format
+and the search tables in the user page should be removed instead an easir method will be that when tables are added , a qr code can be generated for them which can be exported and later printed so once scans instantly brings them to the page with their table number already set for them unable to change or do anythign only they have to enter thier names (the rule or the same full name should not be allowed to order if it has already been used before )
+side should show complementarynot included in the user dashboad too
+and they must order at least one of the main dish type with one side and protein before being allowed to place an order
+note once they pice a main dish , and a type they can only order from there , they cannot order from different main dishes and types
+
+also they stuff after the main dish modals and types too and stuff after that should be drop downs or a popup pages for ease and efficient design
+and also each type , side and protein added should be uploaded with an image that will be displayed by its side in the dashboard of the user and admin
+
+also the place order logic isnt working it keeps failing when i try
+and remove all alerts across the page and replace with actua popups and i mean all
+fix the toggle buttons in the add menu page and do as i say
+fix the order logic because its not saving or tracking at all properly so redo it
+also iin the admin page order should go from pending to served nothing else and it should be a button to mark them as served in the tables page following the logic there or in the live orders page
+and a place where they can check order history and search and filter too should be added
+there should be a search bar in the tables page for table numbers and also in the live order page too by name or table number
+
+NOW FOLLOW MY WORDS EXACTLY AND FIX IT ALL
